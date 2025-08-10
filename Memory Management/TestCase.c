@@ -1,4 +1,6 @@
-void run_tests() 
+#include<stdio.h>//for testing purpose only
+#include "MemoryManagerUpdated.c"  //include main code
+int main()
 {
     printf("==== Running Predefined Test Cases ====\n");
     allocate(0, 128);   // mem[0]
