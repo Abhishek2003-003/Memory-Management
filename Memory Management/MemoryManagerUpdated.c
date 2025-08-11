@@ -1,49 +1,50 @@
 #include <stddef.h>  
+#include <stdio.h>
 
-#define MEMORY_SIZE 102400
-#define MAX_POINTERS 100
+#define memory_size 102400
+#define max_pointers 100
 
-unsigned char memory[MEMORY_SIZE]; //creating block of 100k
-void* mem[MAX_POINTERS];           // User pointers
-int size_arr[MAX_POINTERS];        // Sizes of each allocation
+unsigned char memory[memory_size]; //creating block of 100k
+void* mem[max_pointers];           // User pointers
+int size_arr[max_pointers];        // Sizes of each allocation
 int used = 0;                      // Used bytes count
 
 // Function to show remaining free memory
 void print_remaining() 
 {
-    printf("Remaining memory: %d bytes\n", MEMORY_SIZE - used);
+    printf("Remaining memory: %d bytes\n", memory_size - used);
 }
 
 //****
 
 //  handles overlapping memory
-void memmove(void *dest, const void *src, int count)
- {
+void memorymove(void *destination, const void *source, int count)
+{
  //shifts all the datas after the sealocated space to the deallocated space for efficient packing
-    unsigned char *d = (unsigned char*)dest;
-    const unsigned char *s = (const unsigned char*)src;
+    unsigned char *destination_ptr = (unsigned char*)destination;
+    const unsigned char *source_ptr = (const unsigned char*)source;
 
-    if (d < s) { // normal copy forward
+    if (destination_ptr < source_ptr) { // normal copy forward
         for (int i = 0; i < count; i++) {
-            d[i] = s[i];
+            destination_ptr[i] = source_ptr[i];
         }
     } else { // overlapping copy backwards
         for (int i = count - 1; i >= 0; i--) {
-            d[i] = s[i];
+            destination_ptr[i] = source_ptr[i];
         }
     }
     //this allows remaining large block of memory to be continuos
 }
 
 void* allocate(int n, int size)
- {
+{
  //checks if entered conditions are suitable for allocating memory
-    if (n < 0 || n >= MAX_POINTERS) {
+    if (n < 0 || n >= max_pointers) {
         printf("Index out of bounds. Use n between 0 and 99.\n");
         print_remaining();
         return NULL;
     }
-    if (size <= 0 || size > MEMORY_SIZE - used) {
+    if (size <= 0 || size > memory_size - used) {
         printf("Insufficient memory.\n");
         print_remaining();
         return NULL;
@@ -65,9 +66,9 @@ void* allocate(int n, int size)
 }
 
 void deallocate(int n)
- {
+{
  //checks if the variable is allocated already and can be deallocated 
-    if (n < 0 || n >= MAX_POINTERS || mem[n] == NULL) {
+    if (n < 0 || n >= max_pointers || mem[n] == NULL) {
         printf("Invalid or unallocated index: %d\n", n);
         print_remaining();
         return;
@@ -79,11 +80,11 @@ void deallocate(int n)
 
     //  call the function to Shift all data of memory after this block down (for efficient packing)
     if (bytes_after > 0) {
-        memmove(block_start, block_start + sz, bytes_after);
+        memorymove(block_start, block_start + sz, bytes_after);
     }
 
     // Adjust pointers after n
-    for (int i = n + 1; i < MAX_POINTERS; ++i) {
+    for (int i = n + 1; i < max_pointers; ++i) {
         if (mem[i]) {
             mem[i] = (unsigned char*)mem[i] - sz;
         }
@@ -97,10 +98,10 @@ void deallocate(int n)
 }
 
 void print_state()
- {
+{
     printf("Memory used: %d bytes\n", used);
     print_remaining();
-    for (int i = 0; i < MAX_POINTERS; ++i) {
+    for (int i = 0; i < max_pointers; ++i) {
         if (mem[i]) {
             printf(" mem[%d]: %p, size %d\n", i, mem[i], size_arr[i]);
         }
@@ -108,19 +109,16 @@ void print_state()
     printf("\n");
 }
 
-
 int main() 
 {
     //  clear everything 
-    for (int i = 0; i < MAX_POINTERS; i++) {
+    for (int i = 0; i < max_pointers; i++) {
         mem[i] = NULL;
         size_arr[i] = 0;
     }
-    for (int i = 0; i < MEMORY_SIZE; i++) {
+    for (int i = 0; i < memory_size; i++) {
         memory[i] = 0;
     }
-
-  
 
     while (1) {
         int choice;
@@ -141,24 +139,10 @@ int main()
             deallocate(n);
         } else if (choice == 3) {
             print_state();
+        } else {
+            printf("invalid choice\n");
         }
-  else{printf("invalid choice\n");}
     }
 
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
