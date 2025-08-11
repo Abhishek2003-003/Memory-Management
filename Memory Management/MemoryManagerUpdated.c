@@ -14,14 +14,7 @@ void print_remaining()
     printf("Remaining memory: %d bytes\n", MEMORY_SIZE - used);
 }
 
-// memset replacement
-void memset(void *ptr, int value, int count) 
-{
-    unsigned char *p = (unsigned char*)ptr;
-    for (int i = 0; i < count; i++) {
-        p[i] = (unsigned char)value;
-    }
-}
+//****
 
 //  handles overlapping memory
 void memmove(void *dest, const void *src, int count)
