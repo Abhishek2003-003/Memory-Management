@@ -149,7 +149,23 @@ int main()
         } else if (choice == 3) {
             print_state();
         }
+  else{printf("invalid choice\n");}
     }
 
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
