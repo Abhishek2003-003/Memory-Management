@@ -1,5 +1,4 @@
 #include <stddef.h>  
-#include <stdio.h>
 
 #define memory_size 102400
 #define max_pointers 100
